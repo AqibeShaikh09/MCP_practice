@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 # Configure API key (replace or use environment variable)
-genai.configure(api_key="AIzaSyAsqNIB6Ha6zUr7otP1gShaQgMmECWGq4g")
+genai.configure(api_key="api-key")
 
 def run(params):
     prompt = params.get("prompt", "")
