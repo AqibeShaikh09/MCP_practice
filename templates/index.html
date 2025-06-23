@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MCP Server UI</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        textarea { width: 100%; height: 100px; }
+        pre { background: #f0f0f0; padding: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>MCP Server UI</h1>
+
+    <label for="toolSelect">Choose a tool:</label>
+    <select id="toolSelect"></select>
+
+    <h3>Input JSON:</h3>
+    <textarea id="jsonInput">{}</textarea>
+
+    <br><br>
+    <button onclick="runTool()">Run Tool</button>
+
+    <h3>Response:</h3>
+    <pre id="output"></pre>
+
+    <script>
+        async function loadTools() {
+            const res = await fetch("/");
+            const data = await res.json();
+            const select = document.getElementById("toolSelect");
+
+            data.available_tools.forEach(tool => {
+                const option = document.createElement("option");
+                option.value = tool;
+                option.textContent = tool;
+                select.appendChild(option);
+            });
+        }
+
+        async function runTool() {
+            const tool = document.getElementById("toolSelect").value;
+            const input = document.getElementById("jsonInput").value;
+            const output = document.getElementById("output");
+
+            try {
+                const res = await fetch(`/run/${tool}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: input
+                });
+                const data = await res.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.textContent = "Error: " + err;
+            }
+        }
+
+        loadTools();
+    </script>
+</body>
+</html>
